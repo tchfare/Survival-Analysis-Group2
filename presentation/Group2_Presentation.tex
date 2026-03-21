@@ -1,0 +1,453 @@
+% ============================================================
+% BEAMER PRESENTATION — GROUP 2
+% Clean minimal template — no colour headers
+% ============================================================
+\documentclass[aspectratio=169, 11pt]{beamer}
+
+% ── Minimal clean theme ─────────────────────────────────────
+\usetheme{default}
+\usecolortheme{default}
+\usefonttheme{professionalfonts}
+
+% Only one accent colour used sparingly
+\definecolor{accent}{RGB}{30, 80, 55}
+
+\setbeamercolor{title}{fg=black}
+\setbeamercolor{frametitle}{fg=black, bg=white}
+\setbeamercolor{normal text}{fg=black}
+\setbeamercolor{structure}{fg=accent}
+\setbeamercolor{alerted text}{fg=red!70!black}
+\setbeamercolor{block title}{fg=black, bg=gray!15}
+\setbeamercolor{block body}{fg=black,  bg=white}
+
+\setbeamerfont{title}{series=\bfseries, size=\Large}
+\setbeamerfont{frametitle}{series=\bfseries, size=\large}
+\setbeamerfont{block title}{series=\bfseries}
+
+% Thin rule under frame title instead of coloured bar
+\setbeamertemplate{frametitle}{%
+  \vspace{6pt}%
+  \insertframetitle\\[-2pt]%
+  {\color{gray}\rule{\textwidth}{0.4pt}}%
+  \vspace{2pt}%
+}
+
+% Plain footline: left = group, centre = title, right = page
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=.33\paperwidth,ht=2ex,dp=1ex,left]{}%
+      \hspace{8pt}\tiny Group 2 --- Colon Cancer
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.34\paperwidth,ht=2ex,dp=1ex,center]{}%
+      \tiny Parametric Survival Analysis
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.33\paperwidth,ht=2ex,dp=1ex,right]{}%
+      \tiny \insertframenumber{}/\inserttotalframenumber\hspace*{6pt}
+    \end{beamercolorbox}}%
+  \vspace{2pt}%
+}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{headline}{}
+\setbeamertemplate{itemize item}{\color{accent}\textbullet}
+\setbeamertemplate{itemize subitem}{\color{accent}--}
+
+% ── Packages ────────────────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{caption}
+\captionsetup[figure]{labelfont=bf, textfont=it,
+                       labelformat=simple, labelsep=period,
+                       position=below, skip=2pt}
+\captionsetup[table]{labelfont=bf, textfont=it,
+                      labelformat=simple, labelsep=period,
+                      position=above, skip=2pt}
+
+% Figure path
+\graphicspath{
+  {/home/YOUR_USERNAME/Desktop/SA/Project_1/outputs/figures/}
+}
+
+% ── Title ───────────────────────────────────────────────────
+\title{\textbf{Parametric Survival Analysis}\\[4pt]
+       \large Colon Cancer Dataset}
+\subtitle{Survival Analysis Group Project}
+\author{%
+  \textbf{Group 2}\\[6pt]
+  \small
+  Tchandikou Ouadja Fare \quad
+  Rabecca Kanini Kating'u \quad
+  Joshua Pius Opio\\[2pt]
+  Djadida Uwituze \quad
+  Josiane Kazanenda
+}
+\date{\today}
+\institute{African Institute for Mathematical Sciences}
+
+% ============================================================
+\begin{document}
+% ============================================================
+
+% ── TITLE SLIDE ─────────────────────────────────────────────
+{
+\setbeamertemplate{footline}{}
+\setbeamertemplate{frametitle}{}
+\begin{frame}[plain]
+  \vspace{1.8cm}
+  \titlepage
+\end{frame}
+}
+
+% ── OUTLINE ─────────────────────────────────────────────────
+\begin{frame}{Outline}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+
+% ============================================================
+\section{Data Summary}
+% ============================================================
+\begin{frame}{Data Summary --- Colon Cancer Dataset}
+\begin{columns}[T]
+
+  \begin{column}{0.44\textwidth}
+    \vspace{4pt}
+    \begin{table}
+      \caption{Dataset Overview}
+      \small
+      \begin{tabular}{@{}lr@{}}
+        \toprule
+        \textbf{Statistic}     & \textbf{Value} \\
+        \midrule
+        Total Patients         & 929            \\
+        Events (Deaths)        & 452 (48.7\%)   \\
+        Censored               & 477 (51.3\%)   \\
+        Min Follow-up          & 23 days        \\
+        Max Follow-up          & 3{,}329 days   \\
+        Mean Follow-up         & 1{,}670 days   \\
+        Median Follow-up       & 1{,}976 days   \\
+        \bottomrule
+      \end{tabular}
+    \end{table}
+    \vspace{4pt}
+    \footnotesize
+    \textbf{Note:} \texttt{nodes} had 18 missing values ($<$2\%) ---
+    imputed using \textbf{Last Observation Carried Forward (LOCF)}.
+  \end{column}
+
+  \begin{column}{0.52\textwidth}
+    \vspace{4pt}
+    \begin{table}
+      \caption{Key Variable Statistics (Pre-Imputation)}
+      \small
+      \begin{tabular}{@{}lrrrr@{}}
+        \toprule
+        \textbf{Variable} & \textbf{Min} & \textbf{Max}
+          & \textbf{Mean} & \textbf{Median}\\
+        \midrule
+        Time (days)  & 23   & 3329 & 1670.0 & 1976 \\
+        Status       & 0    & 1    & 0.49   & 0    \\
+        Age (years)  & 18   & 85   & 59.75  & 61   \\
+        Sex          & 0    & 1    & 0.52   & 1    \\
+        Nodes        & 0    & 33   & 3.66   & 2    \\
+        \bottomrule
+      \end{tabular}
+    \end{table}
+    \vspace{6pt}
+    \footnotesize
+    \textbf{Status:} 0 = censored, 1 = death \quad
+    \textbf{Sex:} 0 = female, 1 = male
+  \end{column}
+
+\end{columns}
+\end{frame}
+
+% ============================================================
+\section{Model Fitting}
+% ============================================================
+\begin{frame}{Model Fitting --- All Parametric Models}
+
+  \vspace{4pt}
+  \begin{table}
+    \caption{Parametric Model Comparison: MLE Parameters, Log-Likelihood, AIC and BIC}
+    \centering
+    \small
+    \begin{tabular}{@{}llrrr@{}}
+      \toprule
+      \textbf{Model} & \textbf{MLE Parameters}
+        & \textbf{Log-Lik} & \textbf{AIC} & \textbf{BIC} \\
+      \midrule
+      \rowcolor{gray!12}
+      \textbf{Gen.\ Gamma}
+        & $\mu=7.545$;\ $\sigma=1.575$;\ $Q=-0.481$
+        & $-4103.5$ & \textbf{8212.9} & 8227.4 \\
+      Log-Normal
+        & $\mu_{\log}=7.777$;\ $\sigma_{\log}=1.432$
+        & $-4106.6$ & 8217.1 & 8226.8 \\
+      Log-Logistic
+        & shape$=1.202$;\ scale$=2309.7$
+        & $-4116.4$ & 8236.8 & 8246.4 \\
+      Gompertz
+        & shape$=-3{\times}10^{-4}$;\ rate$=4{\times}10^{-4}$
+        & $-4123.6$ & 8251.2 & 8260.8 \\
+      Exponential
+        & rate$=3{\times}10^{-4}$
+        & $-4131.7$ & 8265.4 & 8270.3 \\
+      Gamma
+        & shape$=1.050$;\ rate$=3{\times}10^{-4}$
+        & $-4131.3$ & 8266.7 & 8276.4 \\
+      Weibull
+        & shape$=0.999$;\ scale$=3433.9$
+        & $-4131.7$ & 8267.4 & 8277.1 \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+
+  \vspace{4pt}
+  \footnotesize
+  Models ranked by AIC (lower = better fit).
+  Best row highlighted in grey.
+  $\Delta$AIC (Gen.\ Gamma vs.\ Log-Normal) $= 4.2$.
+
+\end{frame}
+
+% ============================================================
+\section{Best Model Selection}
+% ============================================================
+\begin{frame}{Best Model Selection --- AIC \& Log-Likelihood}
+
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \begin{figure}
+        \includegraphics[width=\linewidth, trim=0pt 0pt 0pt 0pt, clip]
+          {Figure1_AIC_Comparison.png}
+        \caption{AIC comparison across all parametric models.
+                 Generalised Gamma achieves the lowest AIC (8212.9).}
+      \end{figure}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{figure}
+        \includegraphics[width=\linewidth, trim=0pt 0pt 0pt 0pt, clip]
+          {Figure2_LogLikelihood_Comparison.png}
+        \caption{Log-likelihood comparison. Higher (less negative)
+                 indicates better fit.}
+      \end{figure}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+% ── Survival Curve Overlay ───────────────────────────────────
+\begin{frame}{Best Model Selection --- Survival Curve Overlay}
+
+  \begin{columns}[T]
+    \begin{column}{0.60\textwidth}
+      \begin{figure}
+        \includegraphics[width=\linewidth, trim=0pt 0pt 0pt 0pt, clip]
+          {Figure3_Survival_Curves_AllModels.png}
+        \caption{Fitted survival curves for all seven parametric models.
+                 Models diverge beyond $t > 2000$ days; Generalised Gamma
+                 and Log-Normal track the long tail most closely.}
+      \end{figure}
+    \end{column}
+    \begin{column}{0.37\textwidth}
+      \vspace{14pt}
+      \small
+      \begin{itemize}
+        \item All models agree for $t < 1000$ days
+        \item Divergence grows beyond $t > 2000$ days
+        \item \textbf{GenGamma} and \textbf{LogNormal} best capture
+              the long tail
+        \item Exponential, Weibull, Gamma underestimate
+              long-term survival
+        \item Confirms \textbf{GenGamma} as the best model
+      \end{itemize}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+% ============================================================
+\section{Life Function Plots}
+% ============================================================
+\begin{frame}{Life Functions --- Generalised Gamma Model}
+
+  \begin{columns}[T]
+    \begin{column}{0.58\textwidth}
+      \begin{figure}
+        \includegraphics[width=\linewidth, trim=0pt 0pt 0pt 0pt, clip]
+          {Figure4_LifeFunctions_BestModel.png}
+        \caption{Survival S(t), Hazard h(t), Density f(t) and CDF F(t)
+                 for the Generalised Gamma model fitted to colon cancer data.}
+      \end{figure}
+    \end{column}
+    \begin{column}{0.39\textwidth}
+      \vspace{4pt}
+      \begin{table}
+        \caption{Life Functions at Key Time Points}
+        \tiny
+        \begin{tabular}{@{}rrrrr@{}}
+          \toprule
+          \textbf{t} & \textbf{S(t)} & \textbf{h(t)}
+            & \textbf{f(t)} & \textbf{F(t)} \\
+          \midrule
+          101  & 0.990 & 0.000229 & 0.000227 & 0.010 \\
+          365  & 0.904 & 0.000394 & 0.000356 & 0.097 \\
+          731  & 0.786 & 0.000354 & 0.000278 & 0.214 \\
+          1001 & 0.718 & 0.000317 & 0.000227 & 0.282 \\
+          1501 & 0.621 & 0.000263 & 0.000164 & 0.379 \\
+          2001 & 0.550 & 0.000226 & 0.000124 & 0.450 \\
+          2501 & 0.495 & 0.000198 & 0.000098 & 0.505 \\
+          3001 & 0.451 & 0.000176 & 0.000079 & 0.549 \\
+          \bottomrule
+        \end{tabular}
+      \end{table}
+
+      \vspace{6pt}
+      \small
+      \textbf{Mean survival:} 2{,}130 days (5.84 yrs)\\
+      \textbf{SD:} 1{,}221 days\\
+      \textbf{Variance:} 1{,}491{,}722 days$^2$
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+% ============================================================
+\section{Interpretation}
+% ============================================================
+\begin{frame}{Interpretation --- Generalised Gamma Model}
+
+\begin{columns}[T]
+
+  \begin{column}{0.46\textwidth}
+    \vspace{4pt}
+    \begin{table}
+      \caption{MLE Parameter Estimates with 95\% Confidence Intervals}
+      \small
+      \begin{tabular}{@{}lrrl@{}}
+        \toprule
+        \textbf{Parameter} & \textbf{Estimate} & \textbf{SE} & \textbf{95\% CI} \\
+        \midrule
+        $\mu$      & 7.545    & 0.117 & {[}7.317,\ 7.774{]} \\
+        $\sigma$   & 1.575    & 0.073 & {[}1.438,\ 1.725{]} \\
+        $Q$        & $-0.481$ & 0.191 & {[}$-0.855$,\ $-0.106${]} \\
+        \bottomrule
+      \end{tabular}
+    \end{table}
+
+    \vspace{8pt}
+    \small
+    \begin{itemize}
+      \item \textbf{$\mu = 7.545$:} median survival
+            $\approx e^{7.545} \approx 1{,}900$ days
+      \item \textbf{$\sigma = 1.575$:} spread of the distribution
+      \item \textbf{$Q = -0.481 < 0$:} hazard
+            \alert{rises then falls} --- non-monotone
+    \end{itemize}
+  \end{column}
+
+  \begin{column}{0.50\textwidth}
+    \vspace{14pt}
+    \small
+    \textbf{Life function interpretation:}
+    \begin{itemize}
+      \item \textbf{S(t):} 90\% survive at 1 year;
+            $\approx$55\% at 5 years
+      \item \textbf{h(t):} Risk peaks near day $\sim$300 then
+            \alert{decreases} --- consistent with post-surgical
+            recovery followed by stabilisation
+      \item \textbf{f(t):} Most deaths occur around 300 days
+            after diagnosis
+      \item \textbf{F(t):} 50\% of patients die within
+            $\approx$2{,}500 days ($\sim$6.8 years)
+    \end{itemize}
+
+    \vspace{8pt}
+    \textbf{Mean survival:} 2{,}130 days \textbf{(5.84 years)}\\
+    High SD (1{,}221 days) reflects substantial heterogeneity.
+  \end{column}
+
+\end{columns}
+\end{frame}
+
+% ============================================================
+\section{Conclusions \& Insights}
+% ============================================================
+\begin{frame}{Conclusions \& Clinical Insights}
+
+\begin{columns}[T]
+
+  \begin{column}{0.48\textwidth}
+    \textbf{Statistical Conclusions}
+    \vspace{4pt}
+    \begin{itemize}
+      \small
+      \item \textbf{Generalised Gamma} best fits colon cancer
+            survival data (AIC = 8{,}212.9)
+      \item It allows a flexible hazard shape, outperforming
+            simpler Weibull and Exponential models
+      \item $Q = -0.481 < 0$: hazard is non-monotone ---
+            rises early then gradually declines
+      \item High variability (SD = 1{,}221 days) suggests
+            important patient-level heterogeneity
+    \end{itemize}
+  \end{column}
+
+  \begin{column}{0.48\textwidth}
+    \textbf{Clinical Implications}
+    \vspace{4pt}
+    \begin{itemize}
+      \small
+      \item \textbf{High early risk:} The first $\sim$300 days
+            carry the highest death hazard --- intensive
+            post-operative monitoring is critical
+      \item \textbf{Mean survival $\approx$ 5.8 years:}
+            Provides a practical benchmark for care planning
+      \item $\sim$45\% of patients survive beyond 3{,}000 days,
+            indicating a favourable long-term subgroup
+      \item Lymph node count (\texttt{nodes}) should be
+            incorporated in extended covariate models
+    \end{itemize}
+  \end{column}
+
+\end{columns}
+
+\vspace{10pt}
+\begin{center}
+  \small
+  \textit{The non-monotone hazard pattern is clinically meaningful:
+  early intensive follow-up and long-term survivorship planning
+  are both warranted for colon cancer patients.}
+\end{center}
+
+\end{frame}
+
+% ── THANK YOU ───────────────────────────────────────────────
+{
+\setbeamertemplate{footline}{}
+\setbeamertemplate{frametitle}{}
+\begin{frame}[plain]
+  \vspace{2.5cm}
+  \begin{center}
+    {\Large \textbf{Thank You}}\\[8pt]
+    {\normalsize Questions \& Discussion}\\[20pt]
+    \small
+    \begin{tabular}{ll}
+      \textbf{Dataset:}        & Colon Cancer (\texttt{survival} R package) \\
+      \textbf{Best Model:}     & Generalised Gamma (AIC = 8{,}212.9)        \\
+      \textbf{Mean Survival:}  & 2{,}130 days (5.84 years)                  \\
+    \end{tabular}\\[16pt]
+    \footnotesize
+    Tchandikou Ouadja Fare $\cdot$
+    Rabecca Kanini Kating'u $\cdot$
+    Joshua Pius Opio $\cdot$
+    Djadida Uwituze $\cdot$
+    Josiane Kazanenda
+  \end{center}
+\end{frame}
+}
+
+\end{document}
