@@ -76,7 +76,7 @@ the best-fitting model to understand survival patterns in colon cancer patients.
 
 | Model | Log-Likelihood | AIC | BIC |
 |-------|---------------|-----|-----|
-| **Generalised Gamma** ✅ | **-4103.5** | **8212.9** | 8227.4 |
+| **Generalised Gamma**  | **-4103.5** | **8212.9** | 8227.4 |
 | Log-Normal | -4106.6 | 8217.1 | 8226.8 |
 | Log-Logistic | -4116.4 | 8236.8 | 8246.4 |
 | Gompertz | -4123.6 | 8251.2 | 8260.8 |
@@ -84,7 +84,7 @@ the best-fitting model to understand survival patterns in colon cancer patients.
 | Gamma | -4131.3 | 8266.7 | 8276.4 |
 | Weibull | -4131.7 | 8267.4 | 8277.1 |
 
-✅ **Best model: Generalised Gamma** (lowest AIC = 8,212.9)
+ **Best model: Generalised Gamma** (lowest AIC = 8,212.9)
 
 ### Best Model Parameters
 
@@ -182,7 +182,7 @@ This runs everything end-to-end and saves all figures and tables to `outputs/`.
 
 ### Option B — Step by step
 
-> ⚠️ Run script 01 first — all other scripts depend on `data/colon_clean.csv`
+> Run script 01 first — all other scripts depend on `data/colon_clean.csv`
 
 ```r
 source("scripts/01_data_cleaning.R")   # creates data/colon_clean.csv
