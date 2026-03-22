@@ -227,15 +227,6 @@ install.packages(c(
 
 The Beamer presentation (`presentation/Group2_Presentation.tex`) covers all
 7 steps of the project workflow and is designed for a 7-minute talk.
-
-**To compile in TeXstudio:**
-1. Open `Group2_Presentation.tex`
-2. Update the `\graphicspath` line with your local username:
-   ```latex
-   \graphicspath{{/home/YOUR_USERNAME/path/to/outputs/figures/}}
-   ```
-3. Press **F5** (compile with pdflatex) — run twice for cross-references
-
 ---
 
 ## License
