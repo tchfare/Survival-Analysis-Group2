@@ -21,11 +21,11 @@ the best-fitting model to understand survival patterns in colon cancer patients.
 
 | Member | Script | Contribution |
 |--------|--------|-------------|
-| **Tchandikou Ouadja Fare** | `01_data_cleaning.R` | Data loading, LOCF imputation, survival object |
-| **Rabecca Kanini Kating'u** | `02_summary_tables.R` | Descriptive statistics, Tables 1 & 2 | Beamer
-| **Joshua Pius Opio** | `03_model_fitting.R` | Model fitting, Table 3, Figures 1–3 | Beamer
+| **Tchandikou Ouadja Fare** | `01_data_cleaning.R` | Data loading, LOCF imputation, survival object,README |
+| **Rabecca Kanini Kating'u** | `02_summary_tables.R` | Descriptive statistics, Tables 1 & 2, Beamer |
+| **Joshua Pius Opio** | `03_model_fitting.R` | Model fitting, Table 3, Figures 1–3, Beamer |
 | **Djadida Uwituze** | `04_life_functions.R` | Life functions, Tables 4–5, Figure 4 |
-| **Josiane Kazanenda** | `05_interpretation.R` | MLE Table 6, interpretation, README | Beamer
+| **Josiane Kazanenda** | `05_interpretation.R` | MLE Table 6, interpretation, Beamer  |
 
 ---
 
