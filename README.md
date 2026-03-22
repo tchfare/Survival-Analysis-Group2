@@ -17,6 +17,18 @@ the best-fitting model to understand survival patterns in colon cancer patients.
 
 ---
 
+## Group Members & Contributions
+
+| Member | Script | Contribution |
+|--------|--------|-------------|
+| **Tchandikou Ouadja Fare** | `01_data_cleaning.R` | Data loading, LOCF imputation, survival object |
+| **Rabecca Kanini Kating'u** | `02_summary_tables.R` | Descriptive statistics, Tables 1 & 2 |
+| **Joshua Pius Opio** | `03_model_fitting.R` | Model fitting, Table 3, Figures 1–3 |
+| **Djadida Uwituze** | `04_life_functions.R` | Life functions, Tables 4–5, Figure 4 |
+| **Josiane Kazanenda** | `05_interpretation.R` | MLE Table 6, interpretation, README |
+
+---
+
 ## Dataset
 
 | Item | Details |
@@ -222,18 +234,6 @@ The Beamer presentation (`presentation/Group2_Presentation.tex`) covers all
    \graphicspath{{/home/YOUR_USERNAME/path/to/outputs/figures/}}
    ```
 3. Press **F5** (compile with pdflatex) — run twice for cross-references
-
----
-
-## Group Members & Contributions
-
-| Member | Script | Contribution |
-|--------|--------|-------------|
-| **Tchandikou Ouadja Fare** | `01_data_cleaning.R` | Data loading, LOCF imputation, survival object |
-| **Rabecca Kanini Kating'u** | `02_summary_tables.R` | Descriptive statistics, Tables 1 & 2 |
-| **Joshua Pius Opio** | `03_model_fitting.R` | Model fitting, Table 3, Figures 1–3 |
-| **Djadida Uwituze** | `04_life_functions.R` | Life functions, Tables 4–5, Figure 4 |
-| **Josiane Kazanenda** | `05_interpretation.R` | MLE Table 6, interpretation, README |
 
 ---
 
