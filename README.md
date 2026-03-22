@@ -183,9 +183,9 @@ Survival-Analysis-Group2/
 
 ---
 
-## How to Run
+## How to Run ?
 
-### Option A — Full pipeline (one script)
+### A — Full pipeline (one script)
 
 ```r
 source("scripts/Group_2_SA1.R")
@@ -193,7 +193,7 @@ source("scripts/Group_2_SA1.R")
 
 This runs everything end-to-end and saves all figures and tables to `outputs/`.
 
-### Option B — Step by step
+### B — Step by step
 
 > Run script 01 first — all other scripts depend on `data/colon_clean.csv`
 
