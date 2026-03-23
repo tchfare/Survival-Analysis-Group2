@@ -223,14 +223,6 @@ install.packages(c(
 ))
 ```
 
----
-
-## Presentation
-
-The Beamer presentation (`presentation/Group2_Presentation.tex`) covers all
-7 steps of the project workflow and is designed for a 7-minute talk.
----
-
 ## License
 
 This project is submitted as part of the AIMS Survival Analysis course.
