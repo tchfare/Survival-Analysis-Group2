@@ -215,7 +215,6 @@ source("scripts/05_interpretation.R")  # Table 6, interpretation
 install.packages(c(
   "survival",    # colon dataset and Surv()
   "flexsurv",    # parametric model fitting
-  "dplyr",       # data manipulation
   "ggplot2",     # plotting
   "gridExtra",   # 2x2 plot grid
   "knitr",       # table formatting
