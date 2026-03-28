@@ -1,0 +1,1123 @@
+% ============================================================
+% BEAMER — GROUP 2 | Assignment 2
+% Advanced Survival Analysis: Colon Cancer Dataset
+% Non-Parametric, Semi-Parametric & Extended Cox Models
+% Style : CambridgeUS, AIMS green — consistent with SA1 & SA2
+% ============================================================
+\documentclass[aspectratio=169, 10pt]{beamer}
+\usepackage{xcolor} 
+\usepackage{caption}
+\usetheme{CambridgeUS}
+\usecolortheme{default}
+\usefonttheme{professionalfonts}
+\captionsetup[figure]{labelformat=simple, labelsep=colon} 
+\captionsetup[table]{labelformat=simple, labelsep=colon} 
+% ── Colour palette ──────────────────────────────────────────
+\definecolor{primary}{RGB}{0, 0, 0}
+   % AIMS dark green
+\definecolor{accent} {RGB}{69,123,157}   % steel blue
+\definecolor{steelblue}{rgb}{0.274, 0.51, 0.706}
+
+\usecolortheme[named=primary]{structure}
+%\setbeamercolor{title}               {fg=white,  bg=primary}
+%\setbeamercolor{frametitle}          {fg=white,  bg=primary}
+\setbeamercolor{block title}         {fg=white,  bg=primary}
+%\setbeamercolor{block body}          {fg=black,  bg=gray!7}
+%\setbeamercolor{alerted text}        {fg=red!70!black}
+%\setbeamercolor{palette primary}     {bg=primary,      fg=white}
+%\setbeamercolor{palette secondary}   {bg=primary!75,   fg=white}
+%\setbeamercolor{palette tertiary}    {bg=primary!60,   fg=white}
+%\setbeamercolor{author in head/foot} {bg=primary!80,   fg=white}
+%\setbeamercolor{title in head/foot}  {bg=primary,      fg=white}
+%\setbeamercolor{date in head/foot}   {bg=primary!60,   fg=white}
+
+\setbeamertemplate{caption}[numbered]
+% ── Footer ──────────────────────────────────────────────────
+\setbeamertemplate{footline}{\small
+  \leavevmode\hbox{
+    \begin{beamercolorbox}[wd=.35\paperwidth,ht=2.5ex,dp=1ex,center]
+      {author in head/foot}\scriptsize Group 2 - AIMS Rwanda
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.3\paperwidth,ht=2.5ex,dp=1ex,center]
+      {title in head/foot}
+      \href{https://github.com/tchfare/Survival-Analysis-Group2}
+           {\textcolor{steelblue}\scriptsize GitHub Repo}
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.335\paperwidth,ht=2.5ex,dp=1ex,right]
+      {date in head/foot}
+      
+      \insertframenumber/\inserttotalframenumber\hspace*{2ex}
+    \end{beamercolorbox}}%
+}
+
+% ── Fonts & bullets ─────────────────────────────────────────
+\setbeamerfont{title}     {series=\bfseries, size=\Large}
+\setbeamerfont{frametitle}{series=\bfseries, size=\large}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}   {\color{primary}\textbullet}
+\setbeamertemplate{itemize subitem}{\color{primary}$\circ$}
+\setbeamertemplate{enumerate item} {\color{primary}\insertenumlabel.}
+
+% ── Packages ────────────────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{caption}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{multirow}
+\hypersetup{colorlinks=false, urlcolor=black, linkcolor=black, citecolor=black}
+\captionsetup{font=scriptsize, labelfont=bf, skip=1pt, labelformat=empty}
+
+% ── Figure path — update to match your local outputs folder ─
+\graphicspath{
+  {/home/guest/Desktop/SA/Project_1/outputs2/figures/}
+}
+
+% ── Title block ─────────────────────────────────────────────
+\title{\textbf{Survival Analysis}}
+\subtitle{Assignment 2\\[3pt]
+  Non-Parametric, Semi-Parametric \& Extended Cox Models}
+\author[Group 2]{%
+  \small
+  Tchandikou Ouadja Fare, \quad
+  Rabecca Kanini Kating'u, \quad
+  Joshua Pius Opio, \\[3pt]
+  Djadida Uwituze, \quad
+  Josiane Kazanenda
+}
+\date{\scriptsize\today}
+\institute{African Institute for Mathematical Sciences (AIMS Rwanda)}
+
+% ============================================================
+\begin{document}
+% ============================================================
+
+% ── TITLE ───────────────────────────────────────────────────
+\begin{frame}
+  \titlepage
+  \vspace{-10pt}
+%  \begin{center}
+%    \small\color{primary}
+%    %\url{https://github.com/tchfare/Survival-Analysis-Group2}
+%  \end{center}
+\end{frame}
+
+% ── OUTLINE ─────────────────────────────────────────────────
+\begin{frame}{Outline}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+
+
+
+% INTRODUCTION FRAME
+\begin{frame}
+	\begin{center}
+		\colorbox{white}{\fbox{\parbox{0.8\linewidth}{\centering \Huge \texttt{INTRODUCTION}}}}
+	\end{center}
+\end{frame}
+
+
+
+
+
+
+
+
+
+% ============================================================
+\section{INTRODUCTION}
+% ============================================================
+
+\begin{frame}{Objectives}
+
+			\begin{block}{General Objective}
+		\large
+				To obtain an assumption-robust
+				characterisation of survival patterns and covariate effects.
+				
+			\end{block}
+			
+			\vspace{6pt}
+			\begin{block}{Specific Objectives}
+				%\small
+				\begin{enumerate}
+					\item To estimate survival empirically (Kaplan-Meier)
+					\item To Characterise cumulative hazard (Nelson-Aalen)
+					\item To test group differences with \alert{multiple
+						weighted tests} (Log-Rank, Breslow,
+					Tarone-Ware, Fleming-Harrington)
+					\item To model covariate effects via Cox PH
+					\item To diagnose, refine, and \alert{extend} the
+					Cox model (log-log plots, time interactions)
+					\item To synthesise all findings
+				\end{enumerate}
+			\end{block}
+
+	\end{frame}
+	
+	
+\begin{frame}{Research Questions}	
+	\begin{enumerate}
+		\large
+		\item What does the Kaplan-Meier
+					curve reveal about overall survival?\\
+					
+		\item What shape does the cumulative
+					hazard take (Nelson-Aalen)?\\
+					
+					\item Are survival differences
+					confirmed across all weighted tests?
+					
+					\item Which covariates significantly
+					affect the hazard (Cox PH)?
+					
+					\item Do log-log plots confirm PH,
+					and what does the spline model reveal?
+					
+					\item \alert{Does the Lev+5FU
+						treatment effect change over time?}
+						
+					\item How do all approaches
+					converge?
+				\end{enumerate}	
+\end{frame}
+
+
+
+
+\section{METHODOLOGY}
+
+
+\begin{frame}
+	\begin{center}
+		\colorbox{white}{\fbox{\parbox{0.8\linewidth}{\centering \Huge \texttt{METHODOLOGY}}}}
+	\end{center}
+\end{frame}
+
+
+
+\begin{frame}{About the data}
+	
+	
+	\textbf{Dataset} \medskip
+	
+	The \texttt{colon} dataset (North Central Cancer Treatment Group) contains
+	929 patients from a randomised adjuvant chemotherapy trial.
+	Key variables: treatment (\texttt{rx}: Obs, Lev, Lev+5FU), age, sex,
+	nodes (positive lymph nodes), and tumour differentiation.
+	
+	\begin{center}
+		
+		\begin{table}[ht]  
+			% Wrap the table inside the table environment
+			\caption{Summary of Patient Data in the Colon Cancer Dataset}  % Table caption placed above the table
+			\begin{center}
+				\begin{tabular}{lrr}
+					\toprule
+					& \textbf{n} & \textbf{\%} \\
+					\midrule
+					Total patients & 929 & 100.0 \\
+					Events (deaths) & 452 & 48.7  \\
+					Censored        & 477 & 51.3  \\
+					\bottomrule
+				\end{tabular}
+			\end{center}
+			\vspace{5pt}  % Adds vertical space after the table
+			\begin{flushleft}
+				\centering
+				\small
+				$\blacksquare$ The dataset contains 929 patients, with 452 events (deaths) and 477 censored observations.
+			\end{flushleft}
+		\end{table}
+	\end{center}
+	
+\end{frame}
+
+
+% ── SLIDE: Data Preparation ─────────────────────────────────
+\begin{frame}{Data Preparation}
+	
+
+	\vspace{6pt}
+	
+	\begin{block}{}
+		\begin{enumerate}
+			\large
+			\item Restricted to \textbf{death events only} (\texttt{etype = 2}),
+			one record per patient
+			\item \textbf{Missing data:} \texttt{nodes and differ} had $<2\%$ missing values,
+			imputed using Last Observation Carried Forward (LOCF)
+			\item \textbf{Factor encoding:} \texttt{sex} (Female/Male),
+			\texttt{rx} (Obs/Lev/Lev+5FU),
+			\texttt{differ} (Well/Moderate/Poor)
+			\item \textbf{Survival object:} constructed as
+			\texttt{Surv(time, status)} in R
+		\end{enumerate}
+	\end{block}
+	
+\end{frame}
+
+
+
+
+
+% ── SLIDE: Step 3 Methods ───────────────────────────────────
+\begin{frame}{Hypothesis Testing}
+	
+	\begin{block}{Log-Rank \& Wilcoxon Tests}
+		\large
+		To formally test for survival differences between groups,
+		two non-parametric tests were applied:
+		\[
+		\chi^2 = \frac{\left(\sum_j w_j(O_{1j} - E_{1j})\right)^2}
+		{\sum_j w_j^2 V_j}
+		\]
+		where $O_{1j}$ and $E_{1j}$ are observed and expected deaths
+		in group~1 at time $t_j$, and $V_j$ is the hypergeometric
+		variance.
+	\end{block}
+	
+	\vspace{6pt}
+	
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\large
+			$\blacksquare$ \textbf{Log-Rank} ($w_j = 1$): equal weight
+			at all time points; optimal under proportional hazards;
+			sensitive to late differences.
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\large
+			$\blacksquare$ \textbf{Wilcoxon/Breslow} ($w_j = n_j$):
+			weights early events more heavily; more sensitive to
+			early survival differences.
+		\end{column}
+	\end{columns}
+	
+\end{frame}
+
+
+% ── SLIDE: Step 4 Methods ───────────────────────────────────
+\begin{frame}{Cox Proportional Hazards Model}
+	
+	\begin{block}{Cox PH Model}
+		\large
+		The Cox proportional hazards model relates covariates to the
+		hazard without specifying the baseline hazard $h_0(t)$:
+		\[
+		h(t \mid \mathbf{x}) = h_0(t)\,
+		\exp\!\bigl(\beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_p x_p\bigr)
+		\]
+		Parameters are estimated via \textbf{partial likelihood}.
+		The \textbf{hazard ratio} for covariate $x_k$ is
+		$\text{HR}_k = e^{\hat\beta_k}$, interpreted as the
+		multiplicative change in hazard per unit increase in $x_k$.
+	\end{block}
+	
+	\vspace{6pt}
+	
+	\begin{block}{Modelling Strategy}
+		\begin{enumerate}
+			\large
+			\item \textbf{Univariable models:} one covariate at a time:
+			age, sex, rx, nodes, differ
+			\item \textbf{Multivariable model:} all covariates
+			simultaneously, yielding adjusted hazard ratios
+		\end{enumerate}
+	\end{block}
+	
+\end{frame}
+
+
+% ── SLIDE: Step 5 Methods ───────────────────────────────────
+\begin{frame}{Diagnostics \& Model Refinement}
+	
+	\begin{block}{PH Assumption \& Residual Diagnostics}
+		\large
+		Three diagnostic tools were applied to the multivariable model:
+	\end{block}
+	
+	\vspace{4pt}
+	
+	\begin{enumerate}
+		\small
+		\item \textbf{Schoenfeld residuals} (\texttt{cox.zph}): test
+		$H_0$: scaled residuals are uncorrelated with time.
+		A significant $p$-value indicates PH violation.
+		
+		\vspace{4pt}
+		\item \textbf{Martingale residuals}: plotted against continuous
+		covariates (age, nodes) to detect non-linearity in the
+		log-hazard. A non-flat LOESS trend indicates a violation
+		of the linearity assumption.
+		
+		\vspace{4pt}
+		\item \textbf{dfbeta residuals}: measure the influence of each
+		observation on each coefficient. Values outside $\pm 0.02$
+		flag influential patients.
+	\end{enumerate}
+		\vspace{4pt}
+		
+	$\blacksquare$ \textbf{Refined model:} where non-linearity was detected
+		(nodes), a \textbf{penalised spline}
+		(\texttt{pspline(nodes, df=4)}) was incorporated to
+		flexibly model the log-hazard relationship.
+	
+	
+\end{frame}
+
+
+% ── SLIDE: Step 6 / Software ────────────────────────────────
+\begin{frame}{Synthesis \& Software}
+	
+	\begin{block}{Synthesis}
+		\small
+		Results from all methods were integrated to answer whether the
+		non-parametric, semi-parametric, and parametric (GenGamma,
+		Project~1) approaches converge in their characterisation of:
+		\begin{itemize}
+			\small
+			\item[$\blacksquare$] The shape of the hazard over time
+			\item[$\blacksquare$] The magnitude and significance of
+			treatment effects
+			\item[$\blacksquare$] The key predictors of survival
+		\end{itemize}
+	\end{block}
+	
+	\vspace{6pt}
+	
+	\begin{block}{Software}
+		\footnotesize
+		All analyses were performed in \textbf{R} using the following
+		packages:
+		
+		\vspace{4pt}
+		\begin{columns}[T]
+			
+			\begin{column}{0.48\textwidth}
+				\begin{itemize}
+					\footnotesize
+					\item[$\blacksquare$] \texttt{survival:} KM, NA,
+					Cox PH, diagnostics
+					\item[$\blacksquare$] \texttt{survminer:} KM plots
+					with risk tables
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.48\textwidth}
+				\begin{itemize}
+					\footnotesize
+					\item[$\blacksquare$] \texttt{flexsurv:} GenGamma
+					parametric fit (Project 1)
+					\item[$\blacksquare$] \texttt{ggplot2:} Nelson-Aalen
+					and synthesis figures
+				\end{itemize}
+			\end{column}
+		\end{columns}
+	\end{block}
+	
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{RESULTS AND INTERPRETATION}
+
+
+
+
+
+\begin{frame}
+	\begin{center}
+		\colorbox{white}{\fbox{\parbox{0.8\linewidth}{\centering \Huge \texttt{RESULTS AND INTERPRETATION}}}}
+	\end{center}
+\end{frame}
+
+
+
+% ============================================================
+%\section{Kaplan-Meier Estimator}
+% ============================================================
+
+\begin{frame}{Kaplan-Meier Estimator: Overall Survival}
+
+\begin{columns}[T]
+  \begin{column}{0.56\textwidth}
+  	\begin{figure}
+  		\centering
+  		\includegraphics[width=\linewidth]{/home/guest/Desktop/SA/p2/outputs_proj2/figures/Figure1a_KM_Overall.png}
+  		\caption{Overall Kaplan-Meier Survival Curve}
+  		\label{fig:KM_Overall}
+  	\end{figure}
+  \end{column}
+  
+  
+  \begin{column}{0.41\textwidth}
+    \medskip
+%    \textbf{Survival estimates at key time points:}
+%
+%    \smallskip
+%    \begin{tabular}{@{}rrrr@{}}
+%     
+%      \toprule
+%      \textbf{Days} & \textbf{S(t)} & \textbf{Lower} & \textbf{Upper}\\
+%      \midrule
+%       365 & 0.863 & 0.839 & 0.888 \\
+%       730 & 0.745 & 0.716 & 0.775 \\
+%      1095 & 0.663 & 0.632 & 0.695 \\
+%      1825 & 0.577 & 0.545 & 0.612 \\
+%      2555 & 0.481 & 0.447 & 0.518 \\
+%      \bottomrule
+%    \end{tabular}
+%
+%    \bigskip
+ 
+    \smallskip
+    \begin{table}[ht]  % Wrap the table inside the table environment
+    	\caption{Survival Quantiles for Colon Cancer Patients}  % Table caption placed above the table
+    	\begin{center}
+    		\small
+    		\begin{tabular}{@{}lrl@{}}
+    			\toprule
+    			\textbf{Quantile} & \textbf{Days} & \textbf{95\% CI} \\
+    			\midrule
+    			25th  & 1235 & [1106, 1410] \\
+    			Median & 2418 & [2152, ---]  \\
+    			75th   & ---  & ---           \\
+    			\bottomrule
+    		\end{tabular}
+    	\end{center}
+    	\vspace{5pt}  % Adds vertical space after the table
+    \end{table}
+  
+  
+  
+    \bigskip
+    \small
+    
+    $\blacksquare$ 86\% survive at 1~year.\\
+    \vspace{0.3cm}
+     $\blacksquare$ Median survival $\approx$~2\,418 days ($\approx$6.6~years),
+    consistent with the GenGamma mean of 2\,130 days
+    from Project~1.
+  \end{column}
+\end{columns}
+
+\end{frame}
+
+% ── KM by treatment & sex ────────────────────────────────────
+\begin{frame}{Kaplan-Meier Estimator: Stratified by Group}
+
+\begin{columns}[T]
+  \begin{column}{0.49\textwidth}
+  	\begin{figure}
+    \includegraphics[width=0.9\linewidth]{/home/guest/Desktop/SA/p2/outputs_proj2/figures/Figure1b_KM_Treatment.png}
+    \caption{Kaplan-Meier Curve Stratified by treatment}
+    \label{fig:KM_Treatment}
+	\end{figure}	
+\vspace{-0.45cm}
+    \small
+    $\blacksquare$ Lev+5FU separates clearly from Obs and Lev
+    after $\sim$500~days, indicating a sustained
+    long-term benefit.
+  \end{column}
+  \begin{column}{0.52\textwidth}
+  	\begin{figure}
+    \includegraphics[width=0.9\linewidth]{/home/guest/Desktop/SA/p2/outputs_proj2/figures/Figure1c_KM_Sex.png}
+    \caption{Kaplan-Meier Curve Stratified by Sex}
+    \label{fig:KM_sex}
+    \end{figure}
+    	
+\vspace{-0.45cm}
+    \small
+    $\blacksquare$ The female and male curves overlap throughout
+    follow-up, suggesting no meaningful sex effect
+    on survival.
+  \end{column}
+\end{columns}
+
+\end{frame}
+
+% ============================================================
+%\section{Nelson-Aalen Estimator}
+% ============================================================
+
+\begin{frame}{Nelson-Aalen Estimator: Cumulative Hazard \& Hazard Rate}
+
+\begin{columns}[T]
+  \begin{column}{0.49\textwidth}
+  	
+  	\begin{figure}
+    \includegraphics[width=\linewidth]{/home/guest/Desktop/SA/p2/outputs_proj2/figures/Figure2a_NelsonAalen_CumHaz.png}
+    \caption{Nelson Aalen Cumulative Hazard}
+    \label{fig:NA_Ht}
+    \end{figure}
+    \vspace{-0.45cm}
+    
+    \small
+    $\blacksquare$ $H(t)$ is \textbf{concave}, it rises quickly
+    at first then flattens, indicating decelerating
+    cumulative risk.
+  \end{column}
+  \begin{column}{0.49\textwidth}
+  	
+  	\begin{figure}
+    \includegraphics[width=\linewidth]{/home/guest/Desktop/SA/p2/outputs_proj2/figures/Figure2b_NelsonAalen_Hazard.png}
+    \caption{Nelson Aalen (Non-Parametric) Hazard}
+    \label{fig:NA_H}
+    \end{figure}
+    
+    \vspace{-0.45cm}
+    \scriptsize
+    $\blacksquare$ The smoothed hazard $h(t)$ is \textbf{non-monotone}:
+    it rises to a peak near day~300 then gradually
+    declines. This matches the Generalised Gamma
+    model from the 1st presentation ($Q = -0.481 < 0$),
+    confirming a non-monotone hazard shape.
+  \end{column}
+\end{columns}
+
+\end{frame}
+
+% ============================================================
+%\section{Hypothesis Testing}
+% ============================================================
+
+\begin{frame}{Log-Rank \& Wilcoxon Tests -- Hypothesis Testing}
+
+\begin{columns}[T]
+  \begin{column}{0.54\textwidth}
+    \begin{table}[ht]
+    	\centering
+    	% Wrap the table inside the table environment
+    	\caption{Log-Rank Vs Wilcoxon Tests for Treatment and Sex.} % Table caption placed above the table
+    	\begin{center}
+    		\small
+    		\begin{tabular}{@{}llrrl@{}}
+    			\toprule
+    			\textbf{Comparison} & \textbf{Test} &
+    			$\boldsymbol{\chi^2}$ & \textbf{p} &
+    			\textbf{Decision} \\
+    			\midrule
+    			Treatment (rx) & Log-Rank  & 16.79 & $<$0.05 & Reject $H_0$ \\
+    			Treatment (rx) & Wilcoxon  & 14.45 & $<$0.05 & Reject $H_0$ \\
+    			Sex            & Log-Rank  &  0.40 & $>$0.05 & Fail to reject \\
+    			Sex            & Wilcoxon  &  0.38 & $>$0.05 & Fail to reject \\
+    			\bottomrule
+    		\end{tabular}
+    	\end{center}
+    \end{table}
+    
+    
+
+    \bigskip
+    \textbf{Log-Rank vs Wilcoxon}
+
+    \smallskip
+    The Log-Rank test assigns equal weight to all event times
+    and is optimal under proportional hazards. The Wilcoxon
+    (Breslow) test weights early events more heavily.
+    Both tests agree here, indicating the treatment effect
+    is consistent across early and late follow-up.
+  \end{column}
+
+  \begin{column}{0.43\textwidth}
+    \textbf{Key findings}
+    \medskip
+    \begin{itemize}
+      \item [$\blacksquare$] \textbf{Treatment (rx):} Both tests reject $H_0$.
+            Survival differs significantly across treatment
+            groups. Lev+5FU has the best prognosis.
+      \item [$\blacksquare$] \textbf{Sex:} Both tests fail to reject $H_0$.
+            No significant survival difference between
+            male and female patients.
+      \item [$\blacksquare$] Agreement between both tests suggests the
+            treatment effect is stable over time, not
+            concentrated at early or late failure times.
+    \end{itemize}
+  \end{column}
+\end{columns}
+
+\end{frame}
+
+% ============================================================
+%\section{Cox Proportional Hazards Model}
+% ============================================================
+
+\begin{frame}{Cox Proportional Hazards: Univariable Models}
+
+For each covariate, a univariable Cox model was fitted using
+$h(t \mid x) = h_0(t)\,e^{\beta x}$.
+The table reports the estimated hazard ratio (HR), 95\% CI,
+and significance.
+
+\bigskip
+\begin{center}
+\small
+\begin{table}[ht]  % Wrap the table inside the table environment
+	\caption{Univariable Cox Model with Hazard Ratios}  % Table caption placed above the table
+	\begin{center}
+		\small
+		
+		
+		   \begin{tabular}{@{}llrrrrl@{}}
+			\toprule
+			\textbf{Covariate} & \textbf{Level} & \textbf{HR}
+			& \textbf{Lower} & \textbf{Upper}
+			& \textbf{p-value} & \textbf{Sig} \\
+			\midrule
+			Age (per year)   & ---      & 1.005 & 0.998 & 1.012 & 0.1490 & \\
+			Sex              & Male     & 0.913 & 0.754 & 1.106 & 0.3620 & \\
+			Treatment        & Lev      & 0.978 & 0.796 & 1.202 & 0.8290 & \\
+			Treatment        & Lev+5FU  & 0.656 & 0.530 & 0.813 & \alert{$<$0.001} & \alert{***} \\
+			Nodes (per node) & ---      & 1.079 & 1.066 & 1.093 & \alert{$<$0.001} & \alert{***} \\
+			Differentiation  & Moderate & 1.261 & 0.893 & 1.781 & 0.1840 & \\
+			Differentiation  & Poor     & 1.638 & 1.124 & 2.387 & \alert{0.0098} & \alert{**} \\
+			\bottomrule
+			%\multicolumn{7}{l}{\scriptsize *** $p<0.001$;\quad ** $p<0.01$;\quad * $p<0.05$}
+		\end{tabular}
+		
+				
+%		\begin{tabular}{@{}llrrrl@{}}
+%			\toprule
+%			\textbf{Covariate} & \textbf{Level} & \textbf{HR} & \textbf{Lower} & \textbf{Upper} & \textbf{Sig} \\
+%			\midrule
+%			Age (per year)   & ---          & 1.005 & 0.998 & 1.012 & \\
+%			Sex              & Male         & 0.913 & 0.754 & 1.106 & \\
+%			Treatment        & Lev          & 0.978 & 0.796 & 1.202 & \\
+%			Treatment        & Lev+5FU      & 0.656 & 0.530 & 0.813 & *** \\
+%			Nodes (per node) & ---          & 1.079 & 1.066 & 1.093 & *** \\
+%			Differentiation  & Moderate     & 1.261 & 0.893 & 1.781 & \\
+%			Differentiation  & Poor         & 1.638 & 1.124 & 2.387 & ** \\
+%			\bottomrule
+%		\end{tabular}
+	\end{center}
+	\vspace{5pt}  % Adds vertical space after the table
+	\begin{flushleft}
+		\centering
+		\scriptsize
+		\vspace{-0.2cm} 
+		*** $p<0.001$;\quad ** $p<0.01$;\quad * $p<0.05$  % Footnote for significance levels
+	\end{flushleft}
+\end{table}
+\end{center}
+\vspace{-0.25cm}
+\small
+$\blacksquare$ Lev+5FU, nodes, and poor tumour differentiation are
+significant univariable predictors. Age, sex, and Lev alone
+are not significant.
+
+\end{frame}
+
+% ── Multivariable Cox ────────────────────────────────────────
+\begin{frame}{Cox Proportional Hazards: Multivariable Model}
+
+The multivariable model includes: age, sex, rx, nodes,
+and differentiation simultaneously.
+
+\bigskip
+\begin{columns}[T]
+  
+  	\begin{column}{0.50\textwidth}
+  		\begin{center}
+  			\small
+  			\begin{table}[ht]  % Wrap the table inside the table environment
+  				\caption{Multivariable Cox Model with Hazard Ratios and Confidence Intervals}  % Table caption placed above the table
+  				\begin{tabular}{@{}lrrrl@{}}
+  					     \toprule
+  					     \textbf{Covariate} & \textbf{HR}
+  					       & \textbf{95\% CI} & \textbf{p-value} & \textbf{Sig} \\
+  					     \midrule
+  					     Age              & 1.004 & [0.996, 1.011] & 0.3250 & \\
+  					     Sex (Male)       & 0.885 & [0.729, 1.074] & 0.2190 & \\
+  					     Lev              & 0.973 & [0.793, 1.195] & 0.7970 & \\
+  					     \alert{Lev+5FU}  & \alert{0.638} & \alert{[0.516, 0.789]} & \alert{$<$0.001} & \alert{***} \\
+  					     \alert{Nodes}    & \alert{1.077} & \alert{[1.063, 1.091]} & \alert{$<$0.001} & \alert{***} \\
+  					     Diff.\ Moderate  & 1.214 & [0.859, 1.716] & 0.2700 & \\
+  					     \alert{Diff.\ Poor} & \alert{1.592} & \alert{[1.090, 2.325]} & \alert{0.0156} & \alert{**} \\
+  					     \bottomrule
+  					     \multicolumn{5}{l}{\scriptsize *** $p<0.001$;\quad ** $p<0.01$;\quad * $p<0.05$}
+  					   \end{tabular}
+  			\end{table}
+  		\end{center}
+  	\end{column}
+  
+
+  \begin{column}{0.47\textwidth}
+    \textbf{Interpretation}
+    \medskip
+    \begin{itemize}
+      \item [$\blacksquare$] \textbf{Lev+5FU:} HR = 0.638, a
+            \alert{36\% reduction in hazard}
+            vs.\ observation, adjusting for all other
+            covariates.
+      \item [$\blacksquare$] \textbf{Nodes:} Each additional positive
+            lymph node raises hazard by 7.7\%.
+      \item [$\blacksquare$] \textbf{Poor differentiation:} 59\% higher
+            hazard vs.\ well-differentiated tumours.
+      \item [$\blacksquare$] Age and sex remain non-significant after
+            adjustment, consistent with univariable
+            results.
+    \end{itemize}
+  \end{column}
+\end{columns}
+
+\end{frame}
+
+% ============================================================
+%\section{Diagnostics \& Refinement}
+% ============================================================
+
+\begin{frame}{PH Assumption: Schoenfeld Residuals (Diagnostics \& Refinement)}
+
+\begin{columns}[T]
+  \begin{column}{0.56\textwidth}
+  	\begin{figure}
+  	\includegraphics[width=\linewidth]{/home/guest/Desktop/SA/p2/outputs_proj2/figures/Figure3_Schoenfeld_Residuals.png}
+    \caption{Schoenfeld Residuals Plots}
+    \label{fig:SR}
+	\end{figure}
+	
+  \end{column}
+  \begin{column}{0.41\textwidth}
+    \medskip
+    \footnotesize
+    The Schoenfeld residual test formally evaluates
+    $H_0$: the scaled residuals are uncorrelated with
+    time, i.e.\ the covariate effect is constant.
+
+    \bigskip
+    \begin{tabular}{@{}lrl@{}}
+      \toprule
+      \textbf{Covariate} & \textbf{p} & \textbf{PH?}\\
+      \midrule
+      Age    & $>$0.05 & \checkmark \\
+      Sex    & $>$0.05 & \checkmark \\
+      rx     & $>$0.05 & \checkmark \\
+      Nodes  & $>$0.05 & \checkmark \\
+      Differ & $>$0.05 & \checkmark \\
+      Global & $>$0.05 & \checkmark \\
+      \bottomrule
+    \end{tabular}
+
+    \bigskip
+    \small
+    $\blacksquare$ All $p > 0.05$. The PH assumption holds globally
+    and for each covariate. No stratification or
+    time-varying coefficients are required.
+  \end{column}
+\end{columns}
+
+\end{frame}
+
+% ── Linearity & Influence ────────────────────────────────────
+\begin{frame}{Linearity Check \& Influential Observations (Diagnostics \& Refinement)}
+
+\begin{columns}[T]
+  \begin{column}{0.57\textwidth}
+  	
+  	\begin{figure}
+    \includegraphics[width=\linewidth]{/home/guest/Desktop/SA/p2/outputs_proj2/figures/Figure4_Martingale_Residuals.png}
+    \caption{Martingale Residuals against Age and Nodes}
+    \label{fig:mr}
+    \end{figure}
+    
+	\vspace{-0.4cm}
+	
+    \footnotesize
+    $\blacksquare$ Martingale residuals plotted against continuous
+    covariates.\\
+    
+    The LOESS (Locally Estimated Scatterplot Smoothing) trend for \texttt{nodes}
+    is non-linear: a steep initial rise that flattens
+    at higher node counts. This suggests the linearity
+    assumption in the log-hazard is violated for nodes.
+  \end{column}
+  
+  
+  
+  \begin{column}{0.40\textwidth}
+  	\begin{figure}
+    \includegraphics[width=\linewidth]{/home/guest/Desktop/SA/p2/outputs_proj2/figures/Figure5_Influential_Obs.png}
+    \caption{Influential Observations}
+    \label{fig:IO}
+    \end{figure}
+    
+    \vspace{-0.2cm}
+    
+    \small
+    \textbf{-- dfbeta} values for \texttt{nodes}.\\
+    $\blacksquare$ All observations fall within $\pm 0.02$,
+    indicating no single patient is distorting the results. The results are stable.
+  \end{column}
+  
+\end{columns}
+
+\end{frame}
+
+% ── Refined Cox ──────────────────────────────────────────────
+\begin{frame}{Refined Cox Model: Penalised Spline for Nodes}
+
+\begin{columns}[T]
+  \begin{column}{0.48\textwidth}
+  	\begin{figure}
+    \includegraphics[width=0.95\linewidth]{/home/guest/Desktop/SA/p2/outputs_proj2/figures/Figure6_Spline_Nodes.png}
+    \caption{Non-Linear Effect of Nodes (Penalised Spline)}
+    \label{PS}
+    \end{figure}
+
+	\vspace{-0.5cm}
+    \footnotesize
+    $\blacksquare$ The penalised spline (\texttt{pspline(nodes, df=4)}) 
+    reveals a \textbf{non-linear} log-hazard relationship: risk rises 
+    steeply from 0-5 positive nodes, then continues to increase 
+    more gradually. The curve is truncated at the 95th percentile 
+    to avoid unreliable estimates in the sparse tail.
+    
+  \end{column}
+  
+  \begin{column}{0.47\textwidth}
+    \medskip
+    \small
+    \begin{table}[ht]  % Wrap the table inside the table environment
+    	\caption{Refined Model}  % Table caption placed above the table
+    	\begin{center}
+    		\footnotesize
+    		\begin{tabular}{@{}lrrrl@{}}
+    			     \toprule
+    			     \textbf{Covariate} & \textbf{HR}
+    			       & \textbf{95\% CI} & \textbf{p-value} & \textbf{Sig} \\
+    			     \midrule
+    			     Age              & 1.004 & [0.997, 1.012] & 0.3190 & \\
+    			     Sex (Male)       & 0.880 & [0.725, 1.069] & 0.2060 & \\
+    			     Lev              & 0.970 & [0.790, 1.190] & 0.7650 & \\
+    			     \alert{Lev+5FU}  & \alert{0.634} & \alert{[0.512, 0.784]} & \alert{$<$0.001} & \alert{***} \\
+    			     pspline(nodes)   & \multicolumn{2}{l}{non-linear} & \alert{$<$0.001} & \alert{***} \\
+    			     Diff.\ Moderate  & 1.212 & [0.858, 1.713] & 0.2750 & \\
+    			     \alert{Diff.\ Poor} & \alert{1.584} & \alert{[1.085, 2.314]} & \alert{0.0170} & \alert{**} \\
+    			     \bottomrule
+    			   \end{tabular}
+    	\end{center}
+    	\vspace{5pt}  % Adds vertical space after the table
+    \end{table}
+
+    \small
+    $\blacksquare$ The main conclusions are unchanged.
+    The spline improves model fit without altering
+    the clinical interpretation of Lev+5FU,
+    nodes, or poor differentiation.
+  \end{column}
+\end{columns}
+
+\end{frame}
+
+% ============================================================
+%\section{Synthesis}
+% ============================================================
+
+\begin{frame}{KM vs.\ Generalised Gamma (Synthesis)}
+
+\begin{columns}[T]
+  \begin{column}{0.58\textwidth}
+  	
+  	\begin{figure}
+    \includegraphics[width=0.97\linewidth]{/home/guest/Desktop/SA/p2/outputs_proj2/figures/Figure10_KM_vs_Parametric.png}
+    \caption{KM Vs Parametric (Generalised Gamma) Survival Curves}
+    \label{KMP}
+    \end{figure}
+    
+    
+    \vspace{-0.5cm}
+    
+    
+    \footnotesize
+    $\blacksquare$ KM (solid) and Generalised Gamma (dashed) survival
+    curves are nearly identical up to $t \approx 2\,000$
+    days.  They diverge slightly only in the sparse
+    upper tail, confirming excellent parametric fit.
+  \end{column}
+  \begin{column}{0.39\textwidth}
+  	\small
+    \medskip
+    \textbf{Convergence across methods}
+    \medskip
+    \begin{enumerate}
+      \item KM median ($\approx$2\,418 days) is close
+            to the GenGamma mean (2\,130 days)
+      \item Nelson-Aalen hazard peak ($\sim$day~300)
+            matches the GenGamma non-monotone shape
+            ($Q = -0.481$) exactly
+      \item Log-Rank confirms treatment effect;
+            Cox quantifies it: Lev+5FU,
+            HR = 0.638
+      \item Nodes is the strongest continuous
+            predictor (HR $\approx$ 1.077 per node)
+      \item Poor differentiation raises hazard
+            by $\sim$59\% vs.\ well-differentiated
+    \end{enumerate}
+  \end{column}
+\end{columns}
+
+\end{frame}
+
+
+
+
+
+
+
+
+
+\section{CONCLUSION}
+
+
+
+
+
+\begin{frame}
+	\begin{center}
+		\colorbox{white}{\fbox{\parbox{0.8\linewidth}{\centering \Huge \texttt{CONCLUSION}}}}
+	\end{center}
+\end{frame}
+
+
+% ── Conclusions ──────────────────────────────────────────────
+\begin{frame}{Conclusions}
+\large
+\begin{itemize}\setlength\itemsep{6pt}  % Use itemize for square bullets
+	\item[$\blacksquare$] \texttt{Overall survival:}
+	86\% survive 1~year; median $\approx$~2\,418 days.
+	Lev+5FU patients show markedly better long-term
+	survival; sex has no significant effect.
+	
+	\item[$\blacksquare$] \texttt{Hazard shape:}
+	Non-monotone cumulative hazard. The instantaneous
+	hazard peaks near day~300 then declines,
+	consistent with the GenGamma model ($Q = -0.481$).
+	
+	\item[$\blacksquare$] \texttt{Group differences:}
+	Treatment significantly affects survival
+	($p < 0.05$, both tests); sex does not.
+	Log-Rank and Wilcoxon agree, confirming the
+	treatment effect is stable over time.
+	
+	\item[$\blacksquare$] \texttt{Key predictors:}
+	\texttt{Lev+5FU} (HR = 0.638, 36\% hazard
+	reduction), \texttt{nodes} (HR = 1.077 per node,
+	non-linear), and \texttt{poor differentiation}
+	(HR = 1.592).
+	
+	\item[$\blacksquare$] \texttt{Synthesis:}
+	Non-parametric (KM/NA), parametric (GenGamma),
+	and semi-parametric (Cox) methods consistently
+	identify a high early-risk phase, declining hazard,
+	and a strong protective benefit from Lev+5FU.
+	
+\end{itemize}
+
+
+\end{frame}
+
+% ── Clinical recommendations ─────────────────────────────────
+\begin{frame}{Clinical Implications}
+\large
+\begin{enumerate}\setlength\itemsep{8pt}
+
+  \item \textbf{Prioritise Lev+5FU:} The 36\% hazard
+        reduction is robust to covariate adjustment and
+        confirmed by both non-parametric and
+        semi-parametric methods.
+
+  \item \textbf{Intensify post-operative monitoring in
+        the first 300 days:} This is the period of
+        highest hazard. Closer surveillance could improve
+        early detection of recurrence.
+
+  \item \textbf{Node count as a risk stratifier:}
+        The non-linear effect means that even moving from
+        0 to 3 positive nodes substantially elevates risk.
+        Node status should guide adjuvant therapy decisions.
+
+  \item \textbf{Poor tumour differentiation:}
+        A 59\% higher hazard identifies this group as
+        high-priority for aggressive treatment protocols.
+
+\end{enumerate}
+
+\end{frame}
+
+% ── References ───────────────────────────────────────────────
+\begin{frame}{References}
+
+\small
+\begin{itemize}\setlength\itemsep{5pt}
+  \item Cox, D.R. (1972).
+        Regression models and life-tables.
+        \textit{J. Royal Statistical Society B}, 34(2), 187--220.
+
+  \item Jackson, C.H. (2016).
+        \texttt{flexsurv}: A platform for parametric survival
+        modeling in R.
+        \textit{Journal of Statistical Software}, 70(8), 1--33.
+
+  \item Laurie, J.A.\ et al.\ (1989).
+        Surgical adjuvant therapy of large-bowel carcinoma.
+        \textit{Journal of Clinical Oncology}, 7(10), 1447--1456.
+
+  \item Therneau, T.M.\ \& Grambsch, P.M.\ (2000).
+        \textit{Modeling Survival Data: Extending the Cox Model}.
+        Springer.
+
+  \item Rocke, D.M.\ (2025).
+        \textit{Parametric Survival Models} (Lecture notes).
+        University of California, Davis.
+\end{itemize}
+
+\end{frame}
+
+% ── Thank you ────────────────────────────────────────────────
+\begin{frame}
+  \begin{center}
+  	\large
+    \vspace{18pt}
+    {\Large\color{primary}\textbf{Thank You}}\\[8pt]
+    \large for your attention\\[20pt]
+    \normalsize\textit{Survival Analysis - Assignment 2}\\[4pt]
+    Group 2 --- AIMS Rwanda, \\
+    March 2026\\[10pt]
+    \small\color{gray}
+    \url{https://github.com/tchfare/Survival-Analysis-Group2}
+  \end{center}
+\end{frame}
+
+\end{document}
